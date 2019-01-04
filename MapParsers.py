@@ -2,7 +2,7 @@ from sys import exit, stderr
 
 
 def get_all_line_name(content):
-    """ return a dictionary contains all of the lines
+    """ return a list contains all of the lines
         and its stations """
     lst = []
     lines = []
@@ -12,12 +12,7 @@ def get_all_line_name(content):
             lst.clear()
         lst.append(element)
     lines.append(lst)
-    result = []
-    for line in lines:
-        dic = {}
-        dic[line[0]] = line[1:]
-        result.append(dic)
-    return result
+    return lines
 
 
 def get_requirements(content):
