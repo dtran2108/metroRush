@@ -10,11 +10,6 @@ class Graph:
         return self.requirements.get_end_point()
 
 
-class Line:
-    def __init__(self, lines_lst):
-        pass
-
-
 class Requirement:
     def __init__(self, requirement_lst):
         self.start_point = requirement_lst[0]['START']

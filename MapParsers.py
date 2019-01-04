@@ -1,3 +1,6 @@
+from sys import exit, stderr
+
+
 def get_all_line_name(content):
     """ return a dictionary contains all of the lines
         and its stations """
@@ -28,12 +31,22 @@ def get_requirements(content):
     return requirements
 
 
+def check_file(filename):
+    """ check the file Permission and Existence """ 
+    try:
+        f = open(filename, 'r')
+    except Exception:
+        print('Invalid file', file=stderr)
+        exit()
+    return f
+
+
 def get_map(filename):
     """ return a dictionary contains the lists that
         has the line name and station name and
         a list that contains the requirements"""
-    f = open(filename, 'r')
-    content = f.read().splitlines()
+    file = check_file(filename)
+    content = file.read().splitlines()
     result = get_all_line_name(content)
     requirements = get_requirements(content)
     return result, requirements
