@@ -19,13 +19,11 @@ def get_all_line_name(content):
 
 
 def get_requirements(content):
-    """ return a list of dictionary that contains
+    """ return a dictionary that contains
         the requirements """
-    requirements = []
+    requirements = {}
     for element in content[-3:]:
-        dic = {}
-        dic[element.split('=')[0]] = element.split('=')[-1]
-        requirements.append(dic)
+        requirements[element.split('=')[0]] = element.split('=')[-1]
     return requirements
 
 

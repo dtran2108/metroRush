@@ -18,10 +18,10 @@ class Graph:
 
 
 class Requirement:
-    def __init__(self, requirement_lst):
-        self.start_point = requirement_lst[0]['START']
-        self.end_point = requirement_lst[1]['END']
-        self.train_num = requirement_lst[2]['TRAINS']
+    def __init__(self, requirements):
+        self.start_point = requirements['START']
+        self.end_point = requirements['END']
+        self.train_num = requirements['TRAINS']
     
     def get_start_point(self):
         """ return the start station """
