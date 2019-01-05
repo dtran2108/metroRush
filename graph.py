@@ -17,6 +17,9 @@ class Graph:
         """ return the transfer points have to take when 
             go from line1 to line2 """
         stations = self.get_all_stations()
+        for line in stations.keys():
+            stations[line] = stations[line].get_all_transfer_points()
+        print(stations)
         pass
 
     def find_path_to_transfer_point(self, station, transfer_point):
