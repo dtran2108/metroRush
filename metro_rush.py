@@ -10,6 +10,7 @@ def main():
     requirements = map.get_requirements()
     start_line, start_stationId = requirements.get_start_point()
     print(stations['Blue Line'].get_stationId_from_name('Janak Puri West'))
+    print(stations['Blue Line'].get_all_transfer_points())
 
 
 if __name__ == '__main__':
