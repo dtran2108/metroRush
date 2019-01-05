@@ -18,4 +18,4 @@ class Station:
         """ return the line name the station transfers with """
         station = self.station_lst[id-1]
         if self.check_transfer(id):
-            return station.split(':Conn')[-1]
+            return station.split(':Conn:')[-1]
