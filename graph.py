@@ -1,4 +1,5 @@
 from line import Station
+from Requirements import Requirement
 
 
 class Graph:
@@ -11,26 +12,17 @@ class Graph:
         for key in self.map.keys():
             self.map[key] = Station(self.map[key])
         return self.map
+
+    def find_transfer_points(self, line1, line2):
+        """ return the transfer points have to take when 
+            go from line1 to line2 """
+        stations = self.get_all_stations()
+        pass
+
+    def find_path_to_transfer_point(self, station, transfer_point):
+        """ return the path from a station to the transfer point """
+        pass
     
     def get_requirements(self):
         """ return the requirements """
         return self.requirements
-
-
-class Requirement:
-    def __init__(self, requirements):
-        self.start_point = requirements['START']
-        self.end_point = requirements['END']
-        self.train_num = requirements['TRAINS']
-    
-    def get_start_point(self):
-        """ return the start station """
-        return self.start_point
-
-    def get_end_point(self):
-        """ return the end station """
-        return self.end_point
-
-    def get_train_num(self):
-        """ return number of trains """
-        return self.train_num
