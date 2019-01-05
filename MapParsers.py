@@ -2,17 +2,20 @@ from sys import exit, stderr
 
 
 def get_all_line_name(content):
-    """ return a list contains all of the lines
+    """ return a dictionary contains all of the lines
         and its stations """
     lst = []
     lines = []
     for element in content[:-4]:
         if element.startswith('#') and lst:
             lines.append(lst)
-            lst.clear()
+            lst = []
         lst.append(element)
     lines.append(lst)
-    return lines
+    result = {}
+    for line in lines:
+        result[line[0].strip('#')] = line[1:]
+    return result
 
 
 def get_requirements(content):

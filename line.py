@@ -1,12 +1,8 @@
-class Line:
-    def __init__(self, lines_lst):
-        self.line_name = lines_lst[0]
-        self.stations = lines_lst[1:]
+class Station:
+    def __init__(self, station_lst):
+        self.station_lst = station_lst
 
-    def get_line_name(self):
-        """ return the name of the line """
-        return self.line_name
-
-    def get_all_stations(self):
-        """ return all of the stations of the line """
-        return self.stations
+    def get_station_name_from_id(self, id):
+        """ return the name of the station from 
+            its id """
+        return self.station_lst[id-1].split(':', 1)[-1]

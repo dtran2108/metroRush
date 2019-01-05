@@ -1,13 +1,20 @@
+from line import Station
+
+
 class Graph:
     def __init__(self, map):
         self.map = map[0]
         self.requirements = Requirement(map[1])
 
-    def __repr__(self):
-        return str(self.map)
+    def get_all_stations(self):
+        """ turn all the station into Station objects """
+        for key in self.map.keys():
+            self.map[key] = Station(self.map[key])
+        return self.map
     
     def get_requirements(self):
-        return self.requirements.get_end_point()
+        """ return the requirements """
+        return self.requirements
 
 
 class Requirement:
