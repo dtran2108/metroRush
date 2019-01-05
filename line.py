@@ -9,8 +9,12 @@ class Station:
     def get_stationId_from_name(self, name):
         """ return the station's id from its name """
         for station in self.station_lst:
-            if name in station:
-                return station.split(':')[0]
+            if self.check_transfer(int(station.split(':')[0])):
+                if station.split(':')[1] == name:
+                    return int(station.split(':')[0])
+            else:
+                if station.split(':')[-1] == name:
+                    return int(station.split(':')[0])
 
     def check_transfer(self, id):
         """ check if the station has a transfer point """
