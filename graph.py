@@ -43,9 +43,18 @@ class Graph:
             all_path.append(path)
         return all_path
 
-    def find_path_to_transfer_point(self, station, transfer_point):
-        """ return the path from a station to the transfer point """
-        pass
+    def find_station_path(self, station1_id, station2_id):
+        """ return the path from station to station on the same line """
+        path = []
+        if station1_id < station2_id:
+            while station1_id != station2_id:
+                path.append(station1_id)
+                station1_id += 1
+        else:
+            while station1_id != station2_id:
+                path.append(station1_id)
+                station1_id -= 1
+        return path
     
     def get_requirements(self):
         """ return the requirements """
