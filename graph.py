@@ -19,19 +19,29 @@ class Graph:
         stations = self.get_all_stations()
         for line in stations.keys():
             stations[line] = stations[line].get_all_transfer_points()
-        path = [stations[line1][1]]
-        start = path[-1]
-        check = [start[:start.index(':Conn:')]]
-        while start.split(':')[-1].strip() != line2:
-            line_name = start.split(':')[-1].strip()
-            for transfer_point in stations[line_name]:
-                if transfer_point[:transfer_point.index(':Conn:')] not in check:
-                    path.append(transfer_point)
-                    check.append(transfer_point[:transfer_point.index(':Conn:')])
-                    break
+        all_path = []
+        # traverse through all of the transfer point of the line
+        for transferPoint in stations[line1]:
+            path = [transferPoint]
             start = path[-1]
-        print(path)
-        pass
+            # a boolean list to check whether the transfer point is visited
+            check = [start]
+            # loop until the destination line is found
+            while start.split(':')[-1].strip() != line2:
+                # get the name of the line
+                line_name = start.split(':')[-1].strip()
+                # check each transfer point in the line
+                for transfer_point in stations[line_name]:
+                    # if it hasn't been visited yet
+                    if transfer_point not in check:
+                        path.append(transfer_point)
+                        # mark the visited point
+                        check.append(transfer_point)
+                        break
+                start = path[-1]
+            # get all the possible path
+            all_path.append(path)
+        return all_path
 
     def find_path_to_transfer_point(self, station, transfer_point):
         """ return the path from a station to the transfer point """
