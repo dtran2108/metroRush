@@ -13,12 +13,16 @@ class Graph:
             self.map[key] = Station(self.map[key])
         return self.map
 
-    def find_transfer_points(self, line1, line2):
-        """ return the transfer points have to take when 
-            go from line1 to line2 """
+    def lamgido(self):
         stations = self.get_all_stations()
         for line in stations.keys():
             stations[line] = stations[line].get_all_transfer_points()
+        return stations
+
+    def find_transfer_points(self, line1, line2):
+        """ return the transfer points have to take when 
+            go from line1 to line2 """
+        stations = self.lamgido()
         all_path = []
         # traverse through all of the transfer point of the line
         for transferPoint in stations[line1]:
@@ -50,10 +54,14 @@ class Graph:
             while station1_id != station2_id:
                 path.append(station1_id)
                 station1_id += 1
-        else:
+            path.append(station1_id)
+        elif station1_id > station2_id:
             while station1_id != station2_id:
                 path.append(station1_id)
                 station1_id -= 1
+            path.append(station1_id)
+        else:
+            return [station1_id]
         return path
     
     def get_requirements(self):
