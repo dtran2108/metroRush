@@ -12,7 +12,7 @@ class Requirement:
     def get_end_point(self):
         """ return the end line name and the station's id """
         endPoint = self.end_point.split(':')
-        return startPoint[0], int(startPoint[-1])
+        return endPoint[0], int(endPoint[-1])
 
     def get_train_num(self):
         """ return number of trains """
