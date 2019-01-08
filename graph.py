@@ -9,11 +9,12 @@ class Graph:
 
     def get_all_stations(self):
         """ turn all the station into Station objects """
+        station_on_line = {}
         for key in self.map.keys():
-            self.map[key] = Station(self.map[key])
-        return self.map
+            station_on_line[key] = Station(self.map[key])
+        return station_on_line
 
-    def lamgido(self):
+    def get_transfer_points(self):
         stations = self.get_all_stations()
         for line in stations.keys():
             stations[line] = stations[line].get_all_transfer_points()
@@ -63,22 +64,32 @@ class Graph:
 
     def find_all_paths(self):
         """ return all the possible paths """
-        path = []
-        stations = self.lamgido()
+        # get all the station objects
+        all_stations = self.get_all_stations()
+        # get all the transfer points
+        transfer_points = self.get_transfer_points()
         # get the requirements
         requirements = self.get_requirements()
-        start_line, start_station = requirements.get_start_point()
-        end_line, end_station = requirements.get_end_point()
-        # get the transfer points have to take when go from start line to end line
-        transfer_paths = self.find_transfer_points(stations, start_line, end_line)
-        transfer_path = transfer_paths[0]
-        path_in_line = {}
-        for transfer_point in transfer_path:
-            path_in_line[start_line] = self.find_station_path(start_station, int(transfer_point.split(':')[0]))
-            start_station = int(transfer_point.split(':')[0])
-            start_line = transfer_point.split(':')[-1].strip()
-        path_in_line[start_line] = self.find_station_path(start_station, end_station)
-        path.append(path_in_line)
+        start_line, start_stationId = requirements.get_start_point()
+        end_line, end_stationId = requirements.get_end_point()
+        # find all the transfer points have to take to go from start line to end line
+        transfer_point_paths = self.find_transfer_points(transfer_points, start_line, end_line)
+        path = []
+        for transfer_point_path in transfer_point_paths:
+            line = []
+            # traverse through all the transfer points in path
+            for transfer_point in transfer_point_path:
+                # find the path from start station id to the id of transfer point on the same line
+                line.append((start_line, self.find_station_path(start_stationId, int(transfer_point.split(':')[0]))))
+                # set the new start line and start id to continue the loop
+                start_line = transfer_point.split(':')[-1].strip()
+                start_stationId = all_stations[start_line].get_stationId_from_name(transfer_point.split(':')[1])
+            # end of loop, path still lacks end station -> append it to the path
+            line.append((start_line, self.find_station_path(start_stationId, end_stationId)))
+            path.append(line)
+            # set the original requirements again to continue the big loop
+            start_line, start_stationId = requirements.get_start_point()
+            end_line, end_stationId = requirements.get_end_point()
         return path
     
     def get_requirements(self):
