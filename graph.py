@@ -91,6 +91,17 @@ class Graph:
             start_line, start_stationId = requirements.get_start_point()
             end_line, end_stationId = requirements.get_end_point()
         return path
+
+    def run_the_trains(self):
+        # get the requirements
+        requirements = self.get_requirements()
+        N_trains = requirements.get_train_num()
+        paths = self.find_all_paths()[0]
+        train_lst = ['T{}'.format(i) for i in range(1, int(N_trains)+1)]
+        # dic = {}
+        # di
+        print(paths)
+        return train_lst
     
     def get_requirements(self):
         """ return the requirements """

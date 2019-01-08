@@ -6,7 +6,7 @@ from graph import Graph
 
 def main():
     map = Graph(get_map(argv[-1]))
-    print(map.find_all_paths())
+    print(map.run_the_trains())
 
 
 if __name__ == '__main__':

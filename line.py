@@ -22,11 +22,6 @@ class Station:
             return True
         return False
 
-    def get_transfer(self, id):
-        """ return the line name the station transfers with """
-        station = self.station_lst[id-1]
-        return station.split(':Conn:')[-1]
-
     def get_all_transfer_points(self):
         """ return all the transfer points of a line """
         return [transfer_point for transfer_point in\
