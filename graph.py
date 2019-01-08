@@ -29,8 +29,6 @@ class Graph:
         for transferPoint in stations[line1]:
             path = [transferPoint]
             start = path[-1]
-            # a boolean list to check whether the transfer point is visited
-            check = [start]
             # loop until the destination line is found
             while start.split(':')[-1].strip() != line2:
                 # get the name of the line
@@ -38,14 +36,13 @@ class Graph:
                 # check each transfer point in the line
                 for transfer_point in stations[line_name]:
                     # if it hasn't been visited yet
-                    if transfer_point not in check:
+                    if transfer_point not in path:
                         path.append(transfer_point)
-                        # mark the visited point
-                        check.append(transfer_point)
                         break
                 start = path[-1]
             # get all the possible path
             all_path.append(path)
+        print(all_path)
         return all_path
 
     @staticmethod
