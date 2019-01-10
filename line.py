@@ -4,7 +4,7 @@ class Station:
 
     def get_stationName_from_id(self, id):
         """ return the station's name from its id """
-        return self.station_lst[id-1].split(':', 1)[-1]
+        return self.station_lst[id-1].split(':')[1]
 
     def get_stationId_from_name(self, name):
         """ return the station's id from its name """

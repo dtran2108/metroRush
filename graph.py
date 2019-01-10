@@ -36,37 +36,69 @@ class Graph:
         transfer_point_paths = Path_finding.find_transfer_points(transfer_points, start_line, end_line)
         path = []
         for transfer_point_path in transfer_point_paths:
-            line = {}
+            line = []
             # traverse through all the transfer points in path
             for transfer_point in transfer_point_path:
                 # find the path from start station id to the id of transfer point on the same line
                 new_id = int(transfer_point.split(':')[0])
                 path_to_new_id = Path_finding.find_station_path(start_stationId, new_id)
-                line[start_line] = path_to_new_id
+                for id in path_to_new_id:
+                    line.append('{}:{}'.format(start_line, id)) 
                 # set the new start line and start id to continue the loop
                 start_line = transfer_point.split(':')[-1].strip()
                 start_stationId = all_stations[start_line].get_stationId_from_name(transfer_point.split(':')[1])
             # end of loop, path still lacks end station -> append it to the path
-            line[start_line] = Path_finding.find_station_path(start_stationId, end_stationId)
+            path_to_end = Path_finding.find_station_path(start_stationId, end_stationId)
+            for id in path_to_end:
+                line.append('{}:{}'.format(start_line, id))
             path.append(line)
             # set the original requirements again to continue the big loop
             start_line, start_stationId = requirements.get_start_point()
             end_line, end_stationId = requirements.get_end_point()
         return path
 
+    def display(self, all_stations, train_lst, turn, start_line, start_stationId, end_line, end_station):
+        start = [train.train_label for train in train_lst if train.current_line == start_line and\
+                 train.current_station == start_stationId]
+        end = [train.train_label for train in train_lst if train.current_line == end_line and\
+               train.current_station == end_station]
+        print('Turn {}\n=================================='.format(turn))
+        if start:
+            station_name = all_stations[start_line].get_stationName_from_id(start_stationId)
+            print('{}({}:{})-{}'.format(station_name, start_line, start_stationId, ', '.join(start)))
+        for train in train_lst:
+            if train.current_line != start_line and train.current_station != start_stationId:
+                currentId = int(train.current_station)
+                station_name = all_stations[train.current_line].get_stationName_from_id(currentId)
+                print('{}({}:{})-{}'.format(station_name, train.current_line,\
+                      train.current_station, train.train_label))
+        if end:
+            station_name = all_stations[end_line].get_stationName_from_id(end_station)
+            print('{}({}:{})-{}'.format(station_name, start_line, start_stationId, ', '.join(end)))
+        print()
+
     def run_the_trains(self):
+        all_stations = self.get_all_stations()
         # get the requirements
         requirements = self.get_requirements()
         N_trains = requirements.get_train_num()
         start_line, start_stationId = requirements.get_start_point()
+        end_line, end_stationId = requirements.get_end_point()
         # get the path according to start and end requirements
         path = self.find_all_paths()[1]
         train_lst = [Train('T{}'.format(i), start_line, start_stationId)\
                      for i in range(1, int(N_trains)+1)]
-        for train in train_lst:
-            
-                
-        print(path, '\n')
+        turn = 1
+        end = [train.train_label for train in train_lst if train.current_line == end_line and\
+               train.current_station == end_station]
+        while len(end) < int(N_trains):
+            for train in train_lst:
+                train.find_path(train_lst, path)
+                if train.current_line == end_line and train.current_station == end_stationId:
+                    train_lst.remove(train)
+            self.display(all_stations, train_lst, turn, start_line, start_stationId, end_line, end_stationId)
+            turn += 1
+        print(path)
         return train_lst
     
     def get_requirements(self):
