@@ -1,5 +1,7 @@
 from line import Station
 from Requirements import Requirement
+from path_findingMethods import Path_finding
+from train import Train
 
 
 class Graph:
@@ -18,46 +20,7 @@ class Graph:
         stations = self.get_all_stations()
         for line in stations.keys():
             stations[line] = stations[line].get_all_transfer_points()
-        return stations
-
-    @staticmethod
-    def find_transfer_points(stations, line1, line2):
-        """ return the transfer points have to take when 
-            go from line1 to line2 """
-        all_path = []
-        # traverse through all of the transfer point of the line
-        for transferPoint in stations[line1]:
-            path = [transferPoint]
-            start = path[-1]
-            # loop until the destination line is found
-            while start.split(':')[-1].strip() != line2:
-                # get the name of the line
-                line_name = start.split(':')[-1].strip()
-                # check each transfer point in the line
-                for transfer_point in stations[line_name]:
-                    # if it hasn't been visited yet
-                    if transfer_point not in path:
-                        path.append(transfer_point)
-                        break
-                start = path[-1]
-            # get all the possible path
-            all_path.append(path)
-        print(all_path)
-        return all_path
-
-    @staticmethod
-    def find_station_path(station1_id, station2_id):
-        """ return the path from station to station on the same line """
-        path = []
-        if station1_id < station2_id:
-            for i in range(station1_id, station2_id+1):
-                path.append(i)
-        elif station1_id > station2_id:
-            for i in reversed(range(station2_id, station1_id+1)):
-                path.append(i)
-        else:
-            return [station1_id]
-        return path
+        return stations    
 
     def find_all_paths(self):
         """ return all the possible paths """
@@ -70,19 +33,21 @@ class Graph:
         start_line, start_stationId = requirements.get_start_point()
         end_line, end_stationId = requirements.get_end_point()
         # find all the transfer points have to take to go from start line to end line
-        transfer_point_paths = self.find_transfer_points(transfer_points, start_line, end_line)
+        transfer_point_paths = Path_finding.find_transfer_points(transfer_points, start_line, end_line)
         path = []
         for transfer_point_path in transfer_point_paths:
-            line = []
+            line = {}
             # traverse through all the transfer points in path
             for transfer_point in transfer_point_path:
                 # find the path from start station id to the id of transfer point on the same line
-                line.append((start_line, self.find_station_path(start_stationId, int(transfer_point.split(':')[0]))))
+                new_id = int(transfer_point.split(':')[0])
+                path_to_new_id = Path_finding.find_station_path(start_stationId, new_id)
+                line[start_line] = path_to_new_id
                 # set the new start line and start id to continue the loop
                 start_line = transfer_point.split(':')[-1].strip()
                 start_stationId = all_stations[start_line].get_stationId_from_name(transfer_point.split(':')[1])
             # end of loop, path still lacks end station -> append it to the path
-            line.append((start_line, self.find_station_path(start_stationId, end_stationId)))
+            line[start_line] = Path_finding.find_station_path(start_stationId, end_stationId)
             path.append(line)
             # set the original requirements again to continue the big loop
             start_line, start_stationId = requirements.get_start_point()
@@ -93,11 +58,15 @@ class Graph:
         # get the requirements
         requirements = self.get_requirements()
         N_trains = requirements.get_train_num()
-        paths = self.find_all_paths()[0]
-        train_lst = ['T{}'.format(i) for i in range(1, int(N_trains)+1)]
-        # dic = {}
-        # di
-        print(paths)
+        start_line, start_stationId = requirements.get_start_point()
+        # get the path according to start and end requirements
+        path = self.find_all_paths()[1]
+        train_lst = [Train('T{}'.format(i), start_line, start_stationId)\
+                     for i in range(1, int(N_trains)+1)]
+        for train in train_lst:
+            
+                
+        print(path, '\n')
         return train_lst
     
     def get_requirements(self):
