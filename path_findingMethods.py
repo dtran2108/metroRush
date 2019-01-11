@@ -1,4 +1,40 @@
-class Path_finding:
+from graph import Graph
+
+class Path_finding(Graph):
+
+    @staticmethod    
+    def find_all_paths(all_stations, start_line, start_stationId, end_line, end_stationId):
+        """ return all the possible paths """
+        # get all the transfer points
+        transfer_points = Graph.get_transfer_points(all_stations)
+        # save the original requirements
+        ori_start_line, ori_start_stationId = start_line, start_stationId
+        ori_end_line, ori_end_stationId = end_line, end_stationId
+        # get the path from start line to end line through the transfer points
+        transfer_point_paths = Path_finding.find_transfer_points(transfer_points, start_line, end_line)
+        path = []
+        for transfer_point_path in transfer_point_paths:
+            line = []
+            # traverse through all the transfer points in path
+            for transfer_point in transfer_point_path:
+                # find the path from start station id to the id of transfer point on the same line
+                new_id = int(transfer_point.split(':')[0])
+                path_to_new_id = Path_finding.find_station_path(start_stationId, new_id)
+                for id in path_to_new_id:
+                    line.append('{}:{}'.format(start_line, id)) 
+                # set the new start line and start id to continue the loop
+                start_line = transfer_point.split(':')[-1].strip()
+                start_stationId = all_stations[start_line].get_stationId_from_name(\
+                                  transfer_point.split(':')[1])
+            # end of loop, path still lacks end station -> append it to the path
+            path_to_end = Path_finding.find_station_path(start_stationId, end_stationId)
+            for id in path_to_end:
+                line.append('{}:{}'.format(start_line, id))
+            path.append(line)
+            # set the original requirements again to continue the big loop
+            start_line, start_stationId  = ori_start_line, ori_start_stationId
+            end_line, end_stationId = ori_end_line, ori_end_stationId
+        return path
     
     def find_transfer_points(stations, line1, line2):
         """ return the transfer points have to take when 
