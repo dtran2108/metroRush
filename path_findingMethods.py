@@ -3,13 +3,16 @@ from graph import Graph
 class Path_finding(Graph):
 
     @staticmethod    
-    def find_all_paths(all_stations, start_line, start_stationId, end_line, end_stationId):
+    def find_all_paths(all_stations, start_position, end_position):
         """ return all the possible paths """
         # get all the transfer points
         transfer_points = Graph.get_transfer_points(all_stations)
         # save the original requirements
-        ori_start_line, ori_start_stationId = start_line, start_stationId
-        ori_end_line, ori_end_stationId = end_line, end_stationId
+        ori_start_line, ori_start_stationId = start_position.split(':')[0], int(start_position.split(':')[1])
+        ori_end_line, ori_end_stationId = end_position.split(':')[0], int(end_position.split(':')[1])
+        # set the start point and end point
+        start_line, start_stationId  = ori_start_line, ori_start_stationId
+        end_line, end_stationId = ori_end_line, ori_end_stationId
         # get the path from start line to end line through the transfer points
         transfer_point_paths = Path_finding.find_transfer_points(transfer_points, start_line, end_line)
         path = []

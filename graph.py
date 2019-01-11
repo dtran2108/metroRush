@@ -51,11 +51,11 @@ class Graph:
         all_stations = self.get_all_stations()
         # get all the requirements
         N_trains = self.requirements.train_num
-        start_position, start_line, start_stationId = self.requirements.get_start_point()
-        end_position, end_line, end_stationId = self.requirements.get_end_point()
+        start_position = self.requirements.start_point
+        end_position = self.requirements.end_point
         # get the path according to start and end requirements
         from path_findingMethods import Path_finding
-        path = Path_finding.find_all_paths(all_stations, start_line, start_stationId, end_line, end_stationId)[1]
+        path = Path_finding.find_all_paths(all_stations, start_position, end_position)[1]
         # turn all the trains into Train objects
         train_lst = [Train(str(i), start_position) for i in range(1, N_trains+1)]
         turn = 1
