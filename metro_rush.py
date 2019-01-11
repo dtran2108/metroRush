@@ -2,12 +2,17 @@
 from sys import argv
 from MapParsers import get_map
 from graph import Graph
+from time import time
 
 
 def main():
+    start = time()
+    
     map = Graph(get_map(argv[-1]))
-    print(map.run_the_trains())
+    map.run_the_trains()
 
+    end = time()
+    print('run-time: {}s'.format(end-start))
 
 if __name__ == '__main__':
     main()
