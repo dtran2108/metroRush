@@ -7,7 +7,7 @@ from time import time
 
 def main():
     start = time()
-    
+
     map = Graph(get_map(argv[-1]))
     map.run_the_trains()
 

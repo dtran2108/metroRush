@@ -1,6 +1,6 @@
 class Train:
     def __init__(self, train_label, current_position):
-        self.label = train_label
+        self.label = 'T' + train_label
         self.current_position = current_position
 
     def check_next_position(self, path, train_lst, destination):
@@ -17,7 +17,7 @@ class Train:
         if not occupied:
             return next_position
 
-    def move_train(self, path, train_lst, destination):
+    def move(self, path, train_lst, destination):
         """ move the train to the next position """
         # check for the next position
         new_position = self.check_next_position(path, train_lst, destination)
