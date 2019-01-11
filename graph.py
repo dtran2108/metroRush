@@ -23,31 +23,13 @@ class Graph:
             stations[line] = stations[line].get_all_transfer_points()
         return stations    
 
-    def get_requirements(self):
-        """ get all the requirements including:
-        the number of trains, the start point and the end point """
-        # get the number of trains
-        N_trains = self.requirements.train_num
-        # get the start point
-        start_position = self.requirements.start_point
-        start_line = start_position.split(':')[0]
-        start_stationId = int(start_position.split(':')[1])
-        # get the end point
-        end_position = self.requirements.end_point
-        end_line = end_position.split(':')[0]
-        end_stationId = int(end_position.split(':')[1])
-        return N_trains, start_position, start_line,\
-               start_stationId, end_position, end_line, end_stationId
-    
-    def find_all_paths(self):
+    def find_all_paths(self, all_stations, start_line, start_stationId, end_line, end_stationId):
         """ return all the possible paths """
-        # get all the station objects
-        all_stations = self.get_all_stations()
         # get all the transfer points
         transfer_points = self.get_transfer_points()
-        # get the requirements
-        _, _, start_line, start_stationId,\
-        _, end_line, end_stationId = self.get_requirements()
+        # save the original requirements
+        ori_start_line, ori_start_stationId = start_line, start_stationId
+        ori_end_line, ori_end_stationId = end_line, end_stationId
         # get the path from start line to end line through the transfer points
         transfer_point_paths = Path_finding.find_transfer_points(transfer_points, start_line, end_line)
         path = []
@@ -70,7 +52,7 @@ class Graph:
                 line.append('{}:{}'.format(start_line, id))
             path.append(line)
             # set the original requirements again to continue the big loop
-            _, _, start_line, start_stationId, _, end_line, end_stationId = self.get_requirements()
+            start_line, start_stationId, end_line, end_stationId = ori_start_line, ori_start_stationId, ori_end_line, ori_end_stationId
         return path
 
     def display(self, turn, train_lst, all_stations, start_position, end_position):
@@ -100,9 +82,11 @@ class Graph:
         """ run the trains """
         all_stations = self.get_all_stations()
         # get all the requirements
-        N_trains, start_position, start_line, start_stationId, end_position, end_line, end_stationId = self.get_requirements()
+        N_trains = self.requirements.train_num
+        start_position, start_line, start_stationId = self.requirements.get_start_point()
+        end_position, end_line, end_stationId = self.requirements.get_end_point()
         # get the path according to start and end requirements
-        path = self.find_all_paths()[1]
+        path = self.find_all_paths(all_stations, start_line, start_stationId, end_line, end_stationId)[1]
         # turn all the trains into Train objects
         train_lst = [Train(str(i), start_position) for i in range(1, N_trains+1)]
         turn = 1
