@@ -57,24 +57,22 @@ class Graph:
             end_line, end_stationId = requirements.get_end_point()
         return path
 
-    def display(self, all_stations, train_lst, turn, start_line, start_stationId, end_line, end_station):
-        start = [train.train_label for train in train_lst if train.current_line == start_line and\
-                 train.current_station == start_stationId]
-        end = [train.train_label for train in train_lst if train.current_line == end_line and\
-               train.current_station == end_station]
-        print('Turn {}\n=================================='.format(turn))
+    def display(self, turn, train_lst, all_stations, start_line, start_stationId, end_line, end_stationId, start_position, end_position):
+        print('Turn {}\n=================================================='.format(turn))
+        start = [train.label for train in train_lst if train.current_position == start_position]
+        reached = [train.label for train in train_lst if train.current_position == end_position]
         if start:
-            station_name = all_stations[start_line].get_stationName_from_id(start_stationId)
-            print('{}({}:{})-{}'.format(station_name, start_line, start_stationId, ', '.join(start)))
+            start_stationName = all_stations[start_line].get_stationName_from_id(start_stationId)
+            print('{}({}:{})-{}'.format(start_stationName, start_line, start_stationId, ', '.join(start)))
         for train in train_lst:
-            if train.current_line != start_line and train.current_station != start_stationId:
-                currentId = int(train.current_station)
-                station_name = all_stations[train.current_line].get_stationName_from_id(currentId)
-                print('{}({}:{})-{}'.format(station_name, train.current_line,\
-                      train.current_station, train.train_label))
-        if end:
-            station_name = all_stations[end_line].get_stationName_from_id(end_station)
-            print('{}({}:{})-{}'.format(station_name, start_line, start_stationId, ', '.join(end)))
+            if train.label not in start and train.label not in reached:
+                current_line = train.current_position.split(':')[0]
+                current_station = train.current_position.split(':')[-1]
+                current_name = all_stations[current_line].get_stationName_from_id(int(current_station))
+                print('{}({}:{})-{}'.format(current_name, current_line, current_station, train.label))
+        if reached:
+            end_stationName = all_stations[end_line].get_stationName_from_id(end_stationId)
+            print('{}({}:{})-{}'.format(end_stationName, end_line, end_stationId, ', '.join(reached)))
         print()
 
     def run_the_trains(self):
@@ -83,24 +81,23 @@ class Graph:
         requirements = self.get_requirements()
         N_trains = requirements.get_train_num()
         start_line, start_stationId = requirements.get_start_point()
+        start_position = '{}:{}'.format(start_line, start_stationId)
         end_line, end_stationId = requirements.get_end_point()
+        end_position = '{}:{}'.format(end_line, end_stationId)
         # get the path according to start and end requirements
         path = self.find_all_paths()[1]
-        train_lst = [Train('T{}'.format(i), start_line, start_stationId)\
+        train_lst = [Train('T{}'.format(i), '{}:{}'.format(start_line, start_stationId))\
                      for i in range(1, int(N_trains)+1)]
         turn = 1
-        end = [train.train_label for train in train_lst if train.current_line == end_line and\
-               train.current_station == end_station]
-        while len(end) < int(N_trains):
+        while train_lst[-1].current_position != end_position:
             for train in train_lst:
-                train.find_path(train_lst, path)
-                if train.current_line == end_line and train.current_station == end_stationId:
-                    train_lst.remove(train)
-            self.display(all_stations, train_lst, turn, start_line, start_stationId, end_line, end_stationId)
+                if train.current_position != end_position:
+                    train.move_train(path, train_lst)
+            self.display(turn, train_lst, all_stations, start_line, start_stationId, end_line, end_stationId, start_position, end_position)
             turn += 1
-        print(path)
-        return train_lst
-    
+        print('path: {}\n'.format(path))
+        return train_lst    
+
     def get_requirements(self):
         """ return the requirements """
         return self.requirements

@@ -1,6 +1,5 @@
 class Path_finding:
     
-    @staticmethod
     def find_transfer_points(stations, line1, line2):
             """ return the transfer points have to take when 
                 go from line1 to line2 """
@@ -27,7 +26,6 @@ class Path_finding:
                 all_path.append(path)
             return all_path
 
-    @staticmethod
     def find_station_path(station1_id, station2_id):
         """ return the path from station to station on the same line """
         path = []
