@@ -1,6 +1,7 @@
 from line import Station
 from Requirements import Requirement
 from train import Train
+from time import sleep
 
 
 class Graph:
@@ -23,6 +24,25 @@ class Graph:
             transfer_point[line] = stations[line].get_all_transfer_points()
         return transfer_point
 
+    def print_result(self, stationName, line, stationId, trainLabel):
+        """ print the result """
+        print('{}({}:{})-{}'.format(stationName, line, stationId, trainLabel))
+    
+    def check_and_print(self, lst, all_stations, line, station_id):
+        """ check if the list is not empty and print the results """
+        if lst:
+            stationName = all_stations[line].get_stationName_from_id(station_id)
+            self.print_result(stationName, line, station_id, ', '.join(lst))
+    
+    def print_train_location(self, trains, start, end, stations):
+        """ print all the trains' locations """
+        for train in trains:
+            if train.label not in start and train.label not in end:
+                current_line = train.current_position.split(':')[0]
+                current_station = int(train.current_position.split(':')[-1])
+                current_name = stations[current_line].get_stationName_from_id(current_station)
+                self.print_result(current_name, current_line, current_station, train.label)
+
     def display(self, turn, train_lst, all_stations, start_position, end_position):
         """ display the trains' location at each turn """
         print('Turn {}\n========================================================='.format(turn))
@@ -32,19 +52,20 @@ class Graph:
         start = [train.label for train in train_lst if train.current_position == start_position]
         # get all the train which is at the destination
         reached = [train.label for train in train_lst if train.current_position == end_position]
-        if start:  # if there are trains at the start point
-            start_stationName = all_stations[start_line].get_stationName_from_id(start_stationId)
-            print('{}({}:{})-{}'.format(start_stationName, start_line, start_stationId, ', '.join(start)))
-        for train in train_lst:
-            if train.label not in start and train.label not in reached:
-                current_line = train.current_position.split(':')[0]
-                current_station = int(train.current_position.split(':')[-1])
-                current_name = all_stations[current_line].get_stationName_from_id(current_station)
-                print('{}({}:{})-{}'.format(current_name, current_line, current_station, train.label))
-        if reached:  # if there are trains that reached the destination
-            end_stationName = all_stations[end_line].get_stationName_from_id(end_stationId)
-            print('{}({}:{})-{}'.format(end_stationName, end_line, end_stationId, ', '.join(reached)))
+        # if there are trains at the start point
+        self.check_and_print(start, all_stations, start_line, start_stationId)
+        # print all the trains' locations
+        self.print_train_location(train_lst, start, reached, all_stations)
+        # if there are trains at the end point
+        self.check_and_print(reached, all_stations, end_line, end_stationId)
         print()
+    
+    def move_trains(self, trains, path, endPoint):
+        """ check valid move and move each train in the train list """
+        for train in trains:
+            # if the train hasn't reached the destination yet
+            if train.current_position != endPoint:
+                train.move(path, trains, endPoint)
 
     def run_the_trains(self):
         """ run the trains """
@@ -62,10 +83,8 @@ class Graph:
         # while the last train hasn't reached the destination yet
         while train_lst[-1].current_position != end_position:
             # move each train in the train list
-            for train in train_lst:
-                # if the train hasn't reached the destination yet
-                if train.current_position != end_position:
-                    train.move(path, train_lst, end_position)
+            self.move_trains(train_lst, path, end_position)
             # display the train at each turn
             self.display(turn, train_lst, all_stations, start_position, end_position)
+            sleep(0.1)
             turn += 1
