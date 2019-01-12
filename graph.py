@@ -42,23 +42,35 @@ class Graph:
                 current_station = int(train.current_position.split(':')[-1])
                 current_name = stations[current_line].get_stationName_from_id(current_station)
                 self.print_result(current_name, current_line, current_station, train.label)
+    
+    def position_parse(self, position):
+        """ get the line name and station Id 
+            of a position """
+        position = position.split(':')
+        return position[0], int(position[1])
+
+    def get_trains(self, trains, point):
+        """ get all the trains which is at a point """
+        return [train.label for train in trains if train.current_position == point]
 
     def display(self, turn, train_lst, all_stations, start_position, end_position):
         """ display the trains' location at each turn """
-        print('Turn {}\n========================================================='.format(turn))
-        start_line, start_stationId = start_position.split(':')[0], int(start_position.split(':')[1])
-        end_line, end_stationId = end_position.split(':')[0], int(end_position.split(':')[1])
+        print('Turn {}\n'.format(turn))
+        # get start position
+        start_line, start_stationId = self.position_parse(start_position)
+        # get end position
+        end_line, end_stationId = self.position_parse(end_position)
         # get all the train which is at the start point
-        start = [train.label for train in train_lst if train.current_position == start_position]
+        start = self.get_trains(train_lst, start_position)
         # get all the train which is at the destination
-        reached = [train.label for train in train_lst if train.current_position == end_position]
+        reached = self.get_trains(train_lst, end_position)
         # if there are trains at the start point
         self.check_and_print(start, all_stations, start_line, start_stationId)
         # print all the trains' locations
         self.print_train_location(train_lst, start, reached, all_stations)
         # if there are trains at the end point
         self.check_and_print(reached, all_stations, end_line, end_stationId)
-        print()
+        print('-'*70)
     
     def move_trains(self, trains, path, endPoint):
         """ check valid move and move each train in the train list """
