@@ -44,8 +44,7 @@ class Graph:
                 self.print_result(current_name, current_line, current_station, train.label)
     
     def position_parse(self, position):
-        """ get the line name and station Id 
-            of a position """
+        """ return the line name and station Id of a position """
         position = position.split(':')
         return position[0], int(position[1])
 
