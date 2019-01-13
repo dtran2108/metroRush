@@ -1,7 +1,6 @@
-from line import Station
+from station import Station
 from Requirements import Requirement
 from train import Train
-from time import sleep
 
 
 class Graph:
@@ -31,7 +30,7 @@ class Graph:
     def check_and_print(self, lst, all_stations, line, stationName):
         """ check if the list is not empty and print the results """
         if lst:
-            stationId = all_stations[line].get_stationId_from_name(stationName)
+            stationId = all_stations[line].get_stationId(stationName)
             self.print_result(stationName, line, stationId, ', '.join(lst))
 
     def print_train_location(self, trains, start, end, stations):
@@ -40,7 +39,7 @@ class Graph:
             if train.label not in start and train.label not in end:
                 current_line = train.current_position.split(':')[0]
                 current_station = train.current_position.split(':')[-1]
-                current_id = stations[current_line].get_stationId_from_name(
+                current_id = stations[current_line].get_stationId(
                                current_station)
                 self.print_result(current_station, current_line,
                                   current_id, train.label)
@@ -79,9 +78,11 @@ class Graph:
         all_stations = self.get_all_stations()
         N_trains = self.requirements.train_num
         start_position = self.requirements.start_point.split(':')
-        startPos = '{}:{}'.format(start_position[0], all_stations[start_position[0]].get_stationName_from_id(int(start_position[1])))
+        startPos = '{}:{}'.format(start_position[0], all_stations[
+                    start_position[0]].get_stationName(int(start_position[1])))
         end_position = self.requirements.end_point.split(':')
-        endPos = '{}:{}'.format(end_position[0], all_stations[end_position[0]].get_stationName_from_id(int(end_position[1])))
+        endPos = '{}:{}'.format(end_position[0], all_stations[
+                  end_position[0]].get_stationName(int(end_position[1])))
         from path_findingMethods import Path_finding
         path = min(Path_finding.find_all_paths(all_stations, start_position,
                                                end_position), key=len)
@@ -93,5 +94,4 @@ class Graph:
             self.move_trains(train_lst, path, endPos)
             self.display(turn, train_lst, all_stations,
                          startPos, endPos)
-            sleep(0.1)
             turn += 1

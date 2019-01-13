@@ -6,7 +6,7 @@ class Path_finding(Graph):
     def get_full_path(all_stations, path, result, line_name):
         """ return the full path in the form <line_name>:<stationId> """
         for id in path:
-            stationName = all_stations[line_name].get_stationName_from_id(id)
+            stationName = all_stations[line_name].get_stationName(id)
             result.append('{}:{}'.format(line_name, stationName))
         return result
 
@@ -18,14 +18,17 @@ class Path_finding(Graph):
         return line
 
     @staticmethod
+    def parse_position(position):
+        """ return line name and station id """
+        return position[0], int(position[1])
+
+    @staticmethod
     def find_all_paths(all_stations, start_position, end_position):
         """ return all the possible paths """
-        print('find_all_paths: start_position:', start_position)
         transfer_points = Graph.get_transfer_points(all_stations)
-        ori_start_line = start_position[0]
-        ori_start_stationId = int(start_position[1])
-        ori_end_line = end_position[0]
-        ori_end_stationId = int(end_position[1])
+        # save the original start point and end point
+        ori_start_line, ori_start_stationId = Path_finding.parse_position(start_position)
+        ori_end_line, ori_end_stationId = Path_finding.parse_position(end_position)
         start_line, start_stationId  = ori_start_line, ori_start_stationId
         end_line, end_stationId = ori_end_line, ori_end_stationId
         transfer_point_paths = Path_finding.find_transfer_points(
@@ -40,9 +43,8 @@ class Path_finding(Graph):
                 line = Path_finding.get_path(all_stations, line,\
                         start_stationId, new_id, start_line)
                 start_line = transfer_point.split(':')[-1].strip()
-                start_stationId = all_stations[start_line].get_stationId_from_name(transfer_point.split(':')[1])
-            line = Path_finding.get_path(all_stations, line, start_stationId,\
-                    end_stationId, start_line)
+                start_stationId = all_stations[start_line].get_stationId(transfer_point.split(':')[1])
+            line = Path_finding.get_path(all_stations, line, start_stationId, end_stationId, start_line)
             path.append(line)
             start_line, start_stationId  = ori_start_line, ori_start_stationId
             end_line, end_stationId = ori_end_line, ori_end_stationId
