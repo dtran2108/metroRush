@@ -27,11 +27,11 @@ class Graph:
         """ print the result """
         print('{}({}:{})-{}'.format(stationName, line, stationId, trainLabel))
 
-    def check_and_print(self, lst, all_stations, line, station_id):
+    def check_and_print(self, lst, all_stations, line, stationId):
         """ check if the list is not empty and print the results """
         if lst:
-            stationName = all_stations[line].get_stationName_from_id(station_id)
-            self.print_result(stationName, line, station_id, ', '.join(lst))
+            stationName = all_stations[line].get_stationName_from_id(stationId)
+            self.print_result(stationName, line, stationId, ', '.join(lst))
 
     def print_train_location(self, trains, start, end, stations):
         """ print all the trains' locations """
@@ -39,8 +39,10 @@ class Graph:
             if train.label not in start and train.label not in end:
                 current_line = train.current_position.split(':')[0]
                 current_station = int(train.current_position.split(':')[-1])
-                current_name = stations[current_line].get_stationName_from_id(current_station)
-                self.print_result(current_name, current_line, current_station, train.label)
+                current_name = stations[current_line].get_stationName_from_id(
+                               current_station)
+                self.print_result(current_name, current_line,
+                                  current_station, train.label)
 
     def position_parse(self, position):
         """ return the line name and station Id of a position """
@@ -49,9 +51,11 @@ class Graph:
 
     def get_trains(self, trains, point):
         """ get all the trains which is at a point """
-        return [train.label for train in trains if train.current_position == point]
+        return [train.label for train in trains
+                if train.current_position == point]
 
-    def display(self, turn, train_lst, all_stations, start_position, end_position):
+    def display(self, turn, train_lst, all_stations,
+                start_position, end_position):
         """ display the trains' location at each turn """
         print('Turn {}\n'.format(turn))
         # get start position
@@ -86,15 +90,18 @@ class Graph:
         end_position = self.requirements.end_point
         # get the path according to start and end requirements
         from path_findingMethods import Path_finding
-        path = min(Path_finding.find_all_paths(all_stations, start_position, end_position), key=len)
+        path = min(Path_finding.find_all_paths(all_stations, start_position,
+                                               end_position), key=len)
         # turn all the trains into Train objects
-        train_lst = [Train(str(i), start_position) for i in range(1, N_trains+1)]
+        train_lst = [Train(str(i), start_position)
+                     for i in range(1, N_trains+1)]
         turn = 1
         # while the last train hasn't reached the destination yet
         while train_lst[-1].current_position != end_position:
             # move each train in the train list
             self.move_trains(train_lst, path, end_position)
             # display the train at each turn
-            self.display(turn, train_lst, all_stations, start_position, end_position)
+            self.display(turn, train_lst, all_stations,
+                         start_position, end_position)
             sleep(0.1)
             turn += 1
