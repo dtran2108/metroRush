@@ -16,7 +16,6 @@ class Graph:
             station_on_line[key] = Station(self.map[key])
         return station_on_line
 
-    @staticmethod
     def get_transfer_points(stations):
         """ get all the transfer points of all the lines """
         transfer_point = {}
@@ -27,13 +26,13 @@ class Graph:
     def print_result(self, stationName, line, stationId, trainLabel):
         """ print the result """
         print('{}({}:{})-{}'.format(stationName, line, stationId, trainLabel))
-    
+
     def check_and_print(self, lst, all_stations, line, station_id):
         """ check if the list is not empty and print the results """
         if lst:
             stationName = all_stations[line].get_stationName_from_id(station_id)
             self.print_result(stationName, line, station_id, ', '.join(lst))
-    
+
     def print_train_location(self, trains, start, end, stations):
         """ print all the trains' locations """
         for train in trains:
@@ -42,7 +41,7 @@ class Graph:
                 current_station = int(train.current_position.split(':')[-1])
                 current_name = stations[current_line].get_stationName_from_id(current_station)
                 self.print_result(current_name, current_line, current_station, train.label)
-    
+
     def position_parse(self, position):
         """ return the line name and station Id of a position """
         position = position.split(':')
@@ -70,7 +69,7 @@ class Graph:
         # if there are trains at the end point
         self.check_and_print(reached, all_stations, end_line, end_stationId)
         print('-'*70)
-    
+
     def move_trains(self, trains, path, endPoint):
         """ check valid move and move each train in the train list """
         for train in trains:

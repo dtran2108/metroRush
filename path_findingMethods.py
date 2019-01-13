@@ -2,22 +2,20 @@ from graph import Graph
 
 class Path_finding(Graph):
 
-    @staticmethod
     def get_full_path(path, result, line_name):
         """ return the full path in the form <line_name>:<stationId> """
         for id in path:
             result.append('{}:{}'.format(line_name, id))
         return result
 
-    @staticmethod
     def get_path(line, id, new_id, start_line):
         path_to_new_id = Path_finding.find_station_path(id, new_id)
         line = Path_finding.get_full_path(path_to_new_id, line, start_line)
         return line
 
-    @staticmethod
     def find_all_paths(all_stations, start_position, end_position):
         """ return all the possible paths """
+        print('find_all_paths: start_position:', start_position)
         # get all the transfer points
         transfer_points = Graph.get_transfer_points(all_stations)
         # save the original start point
@@ -53,7 +51,6 @@ class Path_finding(Graph):
             end_line, end_stationId = ori_end_line, ori_end_stationId
         return path
 
-    @staticmethod
     def path_to_destination(stations, start, end_line):
         while start.split(':')[-1].strip() != end_line:
             # get the name of the line
