@@ -13,7 +13,7 @@ def main():
     print('run-time: {}s'.format(end-start))
 
 if __name__ == '__main__':
-    try:
-        main()
-    except:
-        print('Invalid file', file=stderr)
+    # try:
+    main()
+    # except:
+    #     print('Invalid file', file=stderr)
