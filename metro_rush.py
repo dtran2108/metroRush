@@ -7,7 +7,7 @@ from time import time
 
 def main():
     start = time()
-    map = Graph(get_map(argv[-1]))
+    map = Graph(get_map('delhi-metro-stations'))
     map.run_the_trains()
     end = time()
     print('run-time: {}s'.format(end-start))

@@ -6,7 +6,7 @@ class Train:
     def check_next_position(self, trains, nextPos, destination):
         """ return True if the next position is valid """
         for train in trains:
-            if train.current_position == nextPos:
+            if train.current_position.split(':')[-1] == nextPos.split(':')[-1]:
                     if train.label != self.label and nextPos != destination:
                             return True
         return False

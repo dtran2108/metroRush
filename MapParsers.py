@@ -4,17 +4,13 @@ from sys import exit, stderr
 def get_all_line_name(content):
     """ return a dictionary contains all of the lines
         and its stations """
-    lst = []
-    lines = []
-    for element in content[:-4]:
-        if element.startswith('#') and lst:
-            lines.append(lst)
-            lst = []
-        lst.append(element)
-    lines.append(lst)
     result = {}
-    for line in lines:
-        result[line[0].strip('#')] = line[1:]
+    for element in content[:-4]:
+        if element.startswith('#'):
+            line = element.strip('#')
+            result[line] = []
+        else:
+            result[line].append(element)
     return result
 
 
@@ -28,7 +24,7 @@ def get_requirements(content):
 
 
 def check_file(filename):
-    """ check the file Permission and Existence """ 
+    """ check the file Permission and Existence """
     try:
         f = open(filename, 'r')
     except Exception:
