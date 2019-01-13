@@ -9,14 +9,17 @@ class Path_finding(Graph):
             result.append('{}:{}'.format(line_name, id))
         return result
 
-    @staticmethod    
+    @staticmethod
     def find_all_paths(all_stations, start_position, end_position):
         """ return all the possible paths """
         # get all the transfer points
         transfer_points = Graph.get_transfer_points(all_stations)
-        # save the original requirements
-        ori_start_line, ori_start_stationId = start_position.split(':')[0], int(start_position.split(':')[1])
-        ori_end_line, ori_end_stationId = end_position.split(':')[0], int(end_position.split(':')[1])
+        # save the original start point
+        ori_start_line = start_position.split(':')[0]
+        ori_start_stationId = int(start_position.split(':')[1])
+        # save the original end point
+        ori_end_line = end_position.split(':')[0]
+        ori_end_stationId = int(end_position.split(':')[1])
         # set the start point and end point
         start_line, start_stationId  = ori_start_line, ori_start_stationId
         end_line, end_stationId = ori_end_line, ori_end_stationId
@@ -59,7 +62,7 @@ class Path_finding(Graph):
             start = path[-1]
 
     def find_transfer_points(stations, line1, line2):
-        """ return the transfer points have to take when 
+        """ return the transfer points have to take when
             go from line1 to line2 """
         global path, visited
         all_path = []

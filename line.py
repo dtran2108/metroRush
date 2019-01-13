@@ -21,4 +21,5 @@ class Station:
 
     def get_all_transfer_points(self):
         """ return all the transfer points of a line """
-        return [transfer_point for transfer_point in self.station_lst if self.check_transfer(transfer_point)]
+        return [transfer_point for transfer_point in self.station_lst\
+                if self.check_transfer(transfer_point)]
