@@ -32,7 +32,7 @@ class Graph:
         if lst:
             stationName = all_stations[line].get_stationName_from_id(stationId)
             self.print_result(stationName, line, stationId, ', '.join(lst))
-
+            
     def print_train_location(self, trains, start, end, stations):
         """ print all the trains' locations """
         for train in trains:

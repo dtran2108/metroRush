@@ -3,12 +3,12 @@ class Train:
         self.label = 'T' + train_label
         self.current_position = current_position
 
-    def check_next_position(self, trains, next_position, destination):
+    def check_next_position(self, trains, nextPos, destination):
         """ return True if the next position is valid """
         for train in trains:
-            if train.current_position == next_position and\
-                train.label != self.label and next_position != destination:
-                return True
+            if train.current_position == nextPos:
+                    if train.label != self.label and nextPos != destination:
+                            return True
         return False
 
     def find_next_position(self, path, train_lst, destination):
@@ -16,7 +16,8 @@ class Train:
         # get the next position
         next_position = path[path.index(self.current_position) + 1]
         # check if there is any train at the next position
-        occupied = self.check_next_position(train_lst, next_position, destination)
+        occupied = self.check_next_position(train_lst,
+                                            next_position, destination)
         if not occupied:
             return next_position
 
